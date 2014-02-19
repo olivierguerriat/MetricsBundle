@@ -1,0 +1,33 @@
+parameters:
+
+# Client
+    guerriat_metrics.client.class: Guerriat\MetricsBundle\Client\Client
+
+# Metrics
+    guerriat_metrics.counter.class: Guerriat\MetricsBundle\Metric\CounterMetric
+    guerriat_metrics.set.class: Guerriat\MetricsBundle\Metric\SetMetric
+    guerriat_metrics.gauge.class: Guerriat\MetricsBundle\Metric\GaugeMetric
+    guerriat_metrics.timer.class: Guerriat\MetricsBundle\Metric\TimerMetric
+
+# monolog handler
+    guerriat_metrics.monolog.handler.class: Guerriat\MetricsBundle\Monolog\MetricHandler
+
+# MetricCollectors
+    guerriat_metrics.collector.manager.class: Guerriat\MetricsBundle\MetricCollector\MetricCollectorManager
+    guerriat_metrics.collector.time.class: Guerriat\MetricsBundle\MetricCollector\TimeMetricCollector
+    guerriat_metrics.collector.exception.class: Guerriat\MetricsBundle\MetricCollector\ExceptionMetricCollector
+    guerriat_metrics.collector.memory.class: Guerriat\MetricsBundle\MetricCollector\MemoryMetricCollector
+    guerriat_metrics.collector.hit.class: Guerriat\MetricsBundle\MetricCollector\HitMetricCollector
+
+services:
+
+# MetricCollectors
+    guerriat_metrics.collector.time:
+        class: %guerriat_metrics.collector.time.class%
+    guerriat_metrics.collector.exception:
+        class: %guerriat_metrics.collector.exception.class%
+    guerriat_metrics.collector.memory:
+        class: %guerriat_metrics.collector.memory.class%
+    guerriat_metrics.collector.hit:
+        class: %guerriat_metrics.collector.hit.class%
+
