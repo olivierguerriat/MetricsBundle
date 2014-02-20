@@ -72,11 +72,17 @@ class MetricTest extends \PHPUnit_Framework_TestCase
         $metric->setValue('');
     }
 
-    public function testSetValueInvalid()
+    public function testInvalidValue()
     {
         $metric = new CounterMetric('app.counter');
         $this->setExpectedException('InvalidArgumentException');
         $metric->setValue('foo');
+    }
+
+    public function testInvalidValueSet()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $metric = new SetMetric('app.set', '');
     }
 
 }
