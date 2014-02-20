@@ -19,6 +19,16 @@ class SetMetric extends MetricAbstract
         $this->setStatsdMetricCode('s');
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function setValue($value)
+    {
+        if (empty($value)) {
+            throw new \InvalidArgumentException('Metric value can\'t be empty.');
+        }
+        $this->value = $value;
+    }
 }
 
 

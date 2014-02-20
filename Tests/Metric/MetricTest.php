@@ -46,6 +46,8 @@ class MetricTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('app.set', $metric->getKey());
         $this->assertEquals(10, $metric->getValue());
         $this->assertEquals('s', $metric->getStatsdMetricCode());
+        $metric->setValue('bla');
+        $this->assertEquals('bla', $metric->getValue());
     }
 
     public function testTimerMetric()
