@@ -21,7 +21,8 @@ class TimeMetricCollector extends MetricCollector
 
             $time = microtime(true) - $startTime;
             $time = round($time * 1000);
-
+            
+            $key = sprintf('%s.%s', $key, $request->get('_route'));
             $client->timer($key, $time);
         }
     }

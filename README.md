@@ -195,7 +195,7 @@ You have to activate a `MetricCollector` for a specific client via the config fi
 
 A few `MetricCollector`s are included in this bundle:
 
-* `guerriat_metrics.collector.time` collects the request time (in a timer)
+* `guerriat_metrics.collector.time` collects the request time (with route name, in a timer)
 * `guerriat_metrics.collector.exception` collects the exception (with code, in a counter)
 * `guerriat_metrics.collector.memory` collects PHP memory usage (in KB, in a gauge)
 * `guerriat_metrics.collector.hit` collects hits (with route name, in a counter)
