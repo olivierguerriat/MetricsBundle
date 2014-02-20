@@ -3,7 +3,7 @@
 <phpunit bootstrap="./Tests/bootstrap.php" colors="true">
 
     <testsuites>
-        <testsuite name="LiuggioStatsDClientBundle test suite">
+        <testsuite name="GuerriatMetricsBundle test suite">
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
