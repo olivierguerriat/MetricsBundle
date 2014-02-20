@@ -9,6 +9,15 @@ namespace Guerriat\MetricsBundle\Metric;
 class KeyFormatter
 {
 
+    /**
+     * Format a string to be "key ready"
+     * @param mixed $input
+     * @param mixed $maxWord
+     * @param mixed $maxChar
+     * @param string $glue
+     * @return string
+     * @throws \InvalidArgumentException
+     */
     static public function format($input, $maxWord = false, $maxChar = false, $glue = '-')
     {
         if (!preg_match('`^[A-Za-z0-9_ \-\.]*$`', $glue)) {
