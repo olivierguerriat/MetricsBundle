@@ -6,10 +6,7 @@ A [statsd](https://github.com/etsy/statsd) client for Symfony 2.
 
 1. Add it to your `composer.json` file:
 
-    `"require": {
-    	"Guerriat/MetricsBundle": "dev-master"
-    }`
-
+    `"require": { "guerriat/metricsbundle": "dev-master" }`
 
 2. Update your vendors using composer:
 
@@ -314,6 +311,8 @@ Or do all this at once:
                 id: guerriat_metrics.monolog.handler
 
 ## Unit testing
+
+[![Build Status](https://travis-ci.org/olivierguerriat/MetricsBundle.png?branch=master)](https://travis-ci.org/olivierguerriat/MetricsBundle)
 
     $ php composer.phar install
     $ phpunit --coverage-html Tests/coverage
