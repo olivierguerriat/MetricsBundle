@@ -10,8 +10,8 @@ env:
   - SYMFONY_VERSION="dev-master"
 
 before_script:
-  - cat composer.json
-  - sed -e "s/\(\"symfony\/framework-bundle\":\) \".*\"/\1 \"${SYMFONY_VERSION}\"/" -i '' composer.json
+  - sh -c 'cat composer.json'
+  - sh -c 'sed -e "s/\(\"symfony\/framework-bundle\":\) \".*\"/\1 \"${SYMFONY_VERSION}\"/" -i \'\' composer.json'
   - wget -nc http://getcomposer.org/composer.phar
   - php composer.phar install --dev
 
