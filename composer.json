@@ -1,5 +1,6 @@
 {
     "name": "Guerriat/MetricsBundle",
+    "description": "A statsd client for Symfony 2.",
     "type": "symfony-bundle",
     "require": {
         "php": ">=5.3",
