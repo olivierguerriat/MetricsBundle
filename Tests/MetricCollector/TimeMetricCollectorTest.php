@@ -15,13 +15,26 @@ class TimeMetricCollectorTest extends \PHPUnit_Framework_TestCase
         $fakeClient = $this->getMock('Client', array('timer'));
         $fakeClient->expects($this->once())
             ->method('timer')
-            ->with($this->equalTo('key'), $this->greaterThan(0));
+            ->with($this->equalTo('key._bar'), $this->greaterThan(0));
 
+        $fakeRequest = $this->getMock('Request', array('get'));
+        $fakeRequest->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('_route'))
+            ->will($this->returnValue('_bar'));
+        
+        $fakeRequest->server = $this->getMock('Server', array('get'));
+        
+        $fakeRequest->server->expects($this->exactly(2))
+            ->method('get')
+            ->with($this->anything())
+            ->will($this->returnValue(2));
+        
         $c = new TimeMetricCollector();
 
-        $c->collect($fakeClient, 'key', new Request(), new Response(), null, true);
+        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, true);
 
-        $c->collect($fakeClient, 'key', new Request(), new Response(), null, false);
+        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, false);
     }
 
 }
