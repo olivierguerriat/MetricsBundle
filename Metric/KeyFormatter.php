@@ -11,7 +11,7 @@ class KeyFormatter
 
     static public function format($input, $maxWord = false, $maxChar = false, $glue = '-')
     {
-        if (!preg_match('`^[A-Za-z0-9\-\.]*$`', $glue)) {
+        if (!preg_match('`^[A-Za-z0-9_ \-\.]*$`', $glue)) {
             throw new \InvalidArgumentException('The glue \''.$glue.'\' is not accepted in a key.');
         }
         

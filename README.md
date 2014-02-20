@@ -1,6 +1,6 @@
 # MetricsBundle
 
-A statsd client for Symfony 2.
+A [statsd](https://github.com/etsy/statsd) client for Symfony 2.
 
 ## Installation
 
@@ -11,7 +11,7 @@ A statsd client for Symfony 2.
     }`
 
 
-2. Update composer:
+2. Update your vendors using composer:
 
     `$ php composer.phar update`
 
@@ -31,7 +31,7 @@ This bundle's configuration has two main sections: servers & clients.
 
 ### Server
 
-You can setup multiple `statsd` servers and give them a name. For each one, you can specify the host (defaults to `127.0.0.1`), the port (defaults to `8125`) and the maximum size of UDP payload in bytes (defaults to `512`).
+You can setup multiple `statsd` servers and give them a name. For each one, you can specify the host (defaults to `127.0.0.1`), the port (defaults to `8125`) and the maximum size of UDP payload in bytes (defaults to `512`). Metrics are sent together (as much as possible by datagram) at the end of the page generation.
 
 Here's an sample configuration file for two servers:
 
@@ -71,7 +71,7 @@ Here's a sample configuration file featuring three servers and two clients:
 
 ## Metric types
 
-Every metric is identified by a key. It can only contains alphanumerical characters and dots.
+Every metric is identified by a key. It can only contains alphanumerical characters, hyphens, underscores and dots.
 
 ### Counter
 
@@ -171,6 +171,10 @@ Here's an excerpt of a sample configuration file:
                     key: guerriat.connected_users
                     method: getUserId
 
+#### Trigger an event from a controller
+
+    $event = new \Symfony\Component\EventDispatcher\Event();
+    $this->get('event_dispatcher')->dispatch('event_name', $event);
 
 ### Using a `MetricCollector`
 
@@ -229,7 +233,6 @@ However, you also must tell Monolog about our handler by adding this to your con
 If you need to format a string to a valid key, you can use this simple helper:
 
     use Guerriat\MetricsBundle\Metric\KeyFormatter;
-    
     KeyFormatter::format("L'éclair au chocolat"); // returns "Leclair-au-chocolat"
 
 You also can specify a maximum number of words:

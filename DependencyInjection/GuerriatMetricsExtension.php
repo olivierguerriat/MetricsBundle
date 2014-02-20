@@ -82,13 +82,13 @@ class GuerriatMetricsExtension extends Extension
                 if (!isset($servers[$serverAlias])) {
                     throw new \Exception($this->serviceBaseId . ' client ' . $alias . ' used undefined server "' . $serverAlias . '".');
                 } else {
-                    $clientServers[] = $servers[$serverAlias];
+                    $clientServers[$serverAlias] = $servers[$serverAlias];
                 }
             }
         }
         $clientSenders = array();
         foreach ($clientServers as $serverAlias => $serverConfig) {
-            $clientSenders[] = new Reference($this->serviceBaseId . '.sender.' . $serverAlias);
+            $clientSenders[$serverAlias] = new Reference($this->serviceBaseId . '.sender.' . $serverAlias);
         }
 
         // Client service setup
