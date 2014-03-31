@@ -95,6 +95,7 @@ class GuerriatMetricsExtension extends Extension
         $serviceId = ($alias == 'default') ? $this->serviceBaseId : $this->serviceBaseId . '.' . $alias;
         $definition = new Definition('%' . $this->serviceBaseId . '.client.class%');
         $definition->addArgument($clientSenders);
+        $definition->addArgument($config['prefix']);
         
         // Setting Metric classes
         $metrics = array('counter', 'set', 'gauge', 'timer');

@@ -66,6 +66,15 @@ Here's a sample configuration file featuring three servers and two clients:
             no_srv2:
                 servers: ['srv1', 'srv3']
 
+#### Key prefix
+
+You can set a key prefix for a given client:
+
+    client_name:
+        prefix: app_name.env_name
+
+It will be used for all metrics sent by the client (including metrics sent via events, collectors and monolog).
+
 ## Metric types
 
 Every metric is identified by a key. It can only contains alphanumerical characters, hyphens, underscores and dots.
@@ -207,7 +216,7 @@ This bundle have a Monolog handler which can send a increment on every log above
     client_name:
         monolog:
             enable: true
-            prefix: 'guerriat.log'    ## key prefix
+            prefix: 'log'             ## key prefix
             level: 'warning'          ## minimum level
             formatter:
                 context_logging: true ## if you want additional packets for context, default is false.
@@ -222,7 +231,15 @@ However, you also must tell Monolog about our handler by adding this to your con
                 type: service
                 id: guerriat_metrics.monolog.handler
 
+Note that the prefix will be added to the client's prefix. The resulting key will have the format `client_prefix.monolog_prefix.channel.level.first_words`.
 
+#### Log from a controller
+
+    $logger = $this->get('logger');
+    $logger->error('An error occurred');
+    $logger->warning('Something strange took place');
+    $logger->info('Something happened');
+    
 
 
 ### Key format helper
@@ -263,40 +280,42 @@ Or do all this at once:
                 udp_max_size: 1024           ## default is 512
         clients:
             default:
+                prefix: guerriat.prod
                 servers: ['srv1', 'srv2']    ## default is ['all']
                 events:
                     guerriat.app.visit:
-                        increment: guerriat.guest
+                        increment: visit.guest
                     guerriat.app.long_event:
-                        timer: guerriat.long_event.timer
-                        counter: guerriat.long_event.processed_items
+                        timer: long_event.timer
+                        counter: long_event.processed_items
                         gauge:
-                            key: guerriat.long_event.result
+                            key: long_event.result
                             method: getResult
                     guerriat.app.login:
-                        decrement: guerriat.guest
-                        increment: guerriat.known_user
+                        decrement: visit.guest
+                        increment: visit.known_user
                         timer: 
-                            key: guerriat.password_hash.timer
+                            key: password_hash.timer
                             method: getHashDuration
                         set: 
-                            key: guerriat.connected_users
+                            key: connected_users
                             method: getUserId
                 collectors:
-                    sample_bundle.collector.url: guerriat.request.url
-                    guerriat_metrics.collector.time: guerriat.request.time
-                    guerriat_metrics.collector.exception: guerriat.request.exception
-                    guerriat_metrics.collector.memory: guerriat.request.memory
-                    guerriat_metrics.collector.hit: guerriat.request.hit
+                    sample_bundle.collector.url: request.url
+                    guerriat_metrics.collector.time: request.time
+                    guerriat_metrics.collector.exception: request.exception
+                    guerriat_metrics.collector.memory: request.memory
+                    guerriat_metrics.collector.hit: request.hit
                 monolog:
                     enable: true
-                    prefix: 'guerriat.log'    ## key prefix
+                    prefix: 'log'             ## key prefix
                     level: 'warning'          ## minimum level
             test:
+                prefix: guerriat.test
                 servers: ['test']
                 monolog:
                     enable: true
-                    prefix: 'guerriat.log'
+                    prefix: 'log'
                     level: 'debug'
                     formatter:
                         context_logging: true ## if you want additional packets for context, default is false.

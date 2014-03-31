@@ -5,7 +5,7 @@ namespace Guerriat\MetricsBundle\Client;
 use Symfony\Component\EventDispatcher\Event;
 
 use Guerriat\MetricsBundle\Metric\MetricAbstract;
-
+use Guerriat\MetricsBundle\Metric\KeyFormatter;
 
 /**
  * Symfony service providing helpers to send metrics to one or more Senders
@@ -17,6 +17,8 @@ class Client
     protected $senders = array();
     protected $nbSenders = 0;
     protected $senderAliases = array();
+    
+    protected $prefix = false;
 
     protected $metricClasses = array();
 
@@ -25,15 +27,20 @@ class Client
     /**
      * Initialize the Client and set the Senders list
      * @param array $senders
+     * @param string $prefix
      * @throws \InvalidArgumentException
      */
-    public function __construct($senders)
+    public function __construct($senders, $prefix = false)
     {
         $this->senders = $senders;
         $this->nbSenders = count($senders);
         $this->senderAliases = array_keys($senders);
         if ($this->nbSenders == 0) {
             throw new \InvalidArgumentException('A Client should have at least one Sender.');
+        }
+        
+        if ($prefix) {
+            $this->prefix = KeyFormatter::format($prefix);
         }
     }
 
@@ -133,10 +140,16 @@ class Client
 
     /**
      * Add a metric
+     * (and prefix the key if a prefix is set)
      * @param MetricAbstract $metric
      */
     public function addMetric(MetricAbstract $metric)
     {
+        if ($this->prefix) {
+            $key = $metric->getKey();
+            $key = $this->prefix.'.'.$key;
+            $metric->setKey($key);
+        }
         $server = $this->getSender($metric->getKey());
         $server->addMetric($metric);
     }

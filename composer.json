@@ -2,6 +2,15 @@
     "name": "guerriat/metricsbundle",
     "description": "A statsd client for Symfony 2.",
     "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Olivier Guerriat",
+            "email": "opensource@guerriat.be",
+            "homepage": "http://guerriat.be",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": ">=5.3",
         "symfony/framework-bundle": ">2.3"

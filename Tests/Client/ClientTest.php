@@ -18,6 +18,39 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client = new Client(array());
     }
 
+    public function testPrefix()
+    {
+        $metric = new CounterMetric('key');
+        
+        $metric2 = new CounterMetric('prefix.key');
+
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with($this->equalTo($metric2));
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
+
+        $client->addMetric($metric);
+    }
+
+    public function testPrefixFormat()
+    {
+        $metric2 = new CounterMetric('pre-fix-a.key');
+
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->exactly(2))
+            ->method('addMetric')
+            ->with($this->equalTo($metric2));
+        
+        $metric = new CounterMetric('key');
+        $client = new Client(array('fakeSender' => $fakeSender), 'pré&fix à');
+        $client->addMetric($metric);
+        
+        $metric = new CounterMetric('key');
+        $client = new Client(array('fakeSender' => $fakeSender), 'pré&fix &-&)`à');
+        $client->addMetric($metric);
+    }
+
     public function testAddMetric()
     {
         $metric = new CounterMetric('key');
@@ -48,6 +81,28 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             );
 
         $client = new Client(array('fakeSender' => $fakeSender));
+
+        $client->setMetricClass('counter', 'Guerriat\MetricsBundle\Metric\CounterMetric');
+        $client->increment('app.counter');
+    }
+
+    public function testIncrementWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof CounterMetric
+                        && $metric->getValue() == 1
+                        && $metric->getSampleRate() == 1
+                        && $metric->getKey() == 'prefix.app.counter';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
 
         $client->setMetricClass('counter', 'Guerriat\MetricsBundle\Metric\CounterMetric');
         $client->increment('app.counter');
@@ -96,6 +151,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->decrement('app.counter');
     }
 
+    public function testDecrementWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof CounterMetric
+                        && $metric->getValue() == -1
+                        && $metric->getKey() == 'prefix.app.counter';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
+
+        $client->setMetricClass('counter', 'Guerriat\MetricsBundle\Metric\CounterMetric');
+        $client->decrement('app.counter');
+    }
+
     public function testGauge()
     {
         $fakeSender = $this->getMock('Sender', array('addMetric'));
@@ -112,6 +188,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             );
 
         $client = new Client(array('fakeSender' => $fakeSender));
+
+        $client->setMetricClass('gauge', 'Guerriat\MetricsBundle\Metric\GaugeMetric');
+        $client->gauge('app.gauge', 45);
+    }
+
+    public function testGaugeWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof GaugeMetric
+                        && $metric->getValue() == 45
+                        && $metric->getKey() == 'prefix.app.gauge';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
 
         $client->setMetricClass('gauge', 'Guerriat\MetricsBundle\Metric\GaugeMetric');
         $client->gauge('app.gauge', 45);
@@ -138,6 +235,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->set('app.set', 42);
     }
 
+    public function testSetWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof SetMetric
+                        && $metric->getValue() == 42
+                        && $metric->getKey() == 'prefix.app.set';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
+
+        $client->setMetricClass('set', 'Guerriat\MetricsBundle\Metric\SetMetric');
+        $client->set('app.set', 42);
+    }
+
     public function testTimer()
     {
         $fakeSender = $this->getMock('Sender', array('addMetric'));
@@ -154,6 +272,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             );
 
         $client = new Client(array('fakeSender' => $fakeSender));
+
+        $client->setMetricClass('timer', 'Guerriat\MetricsBundle\Metric\TimerMetric');
+        $client->timer('app.timer', 0.0456);
+    }
+
+    public function testTimerWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof TimerMetric
+                        && $metric->getValue() == 0.0456
+                        && $metric->getKey() == 'prefix.app.timer';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
 
         $client->setMetricClass('timer', 'Guerriat\MetricsBundle\Metric\TimerMetric');
         $client->timer('app.timer', 0.0456);
@@ -298,6 +437,40 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->handleEvent($fakeEvent);
     }
 
+    public function testHandleEventIncrementWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof CounterMetric
+                        && $metric->getValue() == 1
+                        && $metric->getKey() == 'prefix.app.count';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
+
+        $fakeEvent = $this->getMock('Symfony\Component\EventDispatcher\Event', array('getName'));
+        $fakeEvent->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('eventName'));
+
+        $client->setMetricClass('counter', 'Guerriat\MetricsBundle\Metric\CounterMetric');
+
+        $client->addEventToListen(
+            'eventName',
+            array(
+                'increment' => 'app.count'
+            )
+        );
+
+        $client->handleEvent($fakeEvent);
+    }
+
     public function testHandleEventDecrement()
     {
         $fakeSender = $this->getMock('Sender', array('addMetric'));
@@ -314,6 +487,40 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             );
 
         $client = new Client(array('fakeSender' => $fakeSender));
+
+        $fakeEvent = $this->getMock('Symfony\Component\EventDispatcher\Event', array('getName'));
+        $fakeEvent->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('eventName'));
+
+        $client->setMetricClass('counter', 'Guerriat\MetricsBundle\Metric\CounterMetric');
+
+        $client->addEventToListen(
+            'eventName',
+            array(
+                'decrement' => 'app.count'
+            )
+        );
+
+        $client->handleEvent($fakeEvent);
+    }
+
+    public function testHandleEventDecrementWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof CounterMetric
+                        && $metric->getValue() == -1
+                        && $metric->getKey() == 'prefix.app.count';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
 
         $fakeEvent = $this->getMock('Symfony\Component\EventDispatcher\Event', array('getName'));
         $fakeEvent->expects($this->once())
@@ -374,6 +581,47 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->handleEvent($fakeEvent);
     }
 
+    public function testHandleEventTimingWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof TimerMetric
+                        && $metric->getValue() == 0.0456
+                        && $metric->getKey() == 'prefix.app.timer';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
+
+        $fakeEvent = $this->getMock('Symfony\Component\EventDispatcher\Event', array('getName', 'getTime'));
+        $fakeEvent->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('eventName'));
+
+        $fakeEvent->expects($this->once())
+            ->method('getTime')
+            ->will($this->returnValue(0.0456));
+
+
+        $client->setMetricClass('timer', 'Guerriat\MetricsBundle\Metric\TimerMetric');
+
+        $client->addEventToListen(
+            'eventName',
+            array(
+                'timer' => array(
+                    'key' => 'app.timer',
+                    'method' => 'getTime',
+                )
+            )
+        );
+
+        $client->handleEvent($fakeEvent);
+    }
 
     public function testHandleEventSet()
     {
@@ -417,6 +665,48 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->handleEvent($fakeEvent);
     }
 
+    public function testHandleEventSetWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof SetMetric
+                        && $metric->getValue() == 42
+                        && $metric->getKey() == 'prefix.app.set';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
+
+        $fakeEvent = $this->getMock('Symfony\Component\EventDispatcher\Event', array('getName', 'getVal'));
+        $fakeEvent->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('eventName'));
+
+        $fakeEvent->expects($this->once())
+            ->method('getVal')
+            ->will($this->returnValue(42));
+
+
+        $client->setMetricClass('set', 'Guerriat\MetricsBundle\Metric\SetMetric');
+
+        $client->addEventToListen(
+            'eventName',
+            array(
+                'set' => array(
+                    'key' => 'app.set',
+                    'method' => 'getVal',
+                )
+            )
+        );
+
+        $client->handleEvent($fakeEvent);
+    }
+
     public function testHandleEventGauge()
     {
         $fakeSender = $this->getMock('Sender', array('addMetric'));
@@ -433,6 +723,48 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             );
 
         $client = new Client(array('fakeSender' => $fakeSender));
+
+        $fakeEvent = $this->getMock('Symfony\Component\EventDispatcher\Event', array('getName', 'getVal'));
+        $fakeEvent->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('eventName'));
+
+        $fakeEvent->expects($this->once())
+            ->method('getVal')
+            ->will($this->returnValue(42));
+
+
+        $client->setMetricClass('gauge', 'Guerriat\MetricsBundle\Metric\GaugeMetric');
+
+        $client->addEventToListen(
+            'eventName',
+            array(
+                'gauge' => array(
+                    'key' => 'app.gauge',
+                    'method' => 'getVal',
+                )
+            )
+        );
+
+        $client->handleEvent($fakeEvent);
+    }
+    
+    public function testHandleEventGaugeWithPrefix()
+    {
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with(
+                $this->callback(
+                    function ($metric) {
+                        return $metric instanceof GaugeMetric
+                        && $metric->getValue() == 42
+                        && $metric->getKey() == 'prefix.app.gauge';
+                    }
+                )
+            );
+
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix');
 
         $fakeEvent = $this->getMock('Symfony\Component\EventDispatcher\Event', array('getName', 'getVal'));
         $fakeEvent->expects($this->once())
