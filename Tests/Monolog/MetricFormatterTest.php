@@ -90,7 +90,7 @@ class MetricFormatterTest extends \PHPUnit_Framework_TestCase
             array(
                 'WARNING.What-a',
                 'WARNING.What-a.context.version.3',
-                'WARNING.What-a.context.dev.true',
+                'WARNING.What-a.context.dev.1',
                 'WARNING.What-a.extra.user.42'
             ),
             $formatted
