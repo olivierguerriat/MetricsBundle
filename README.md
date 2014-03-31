@@ -208,6 +208,7 @@ A few `MetricCollector`s are included in this bundle:
 * `guerriat_metrics.collector.exception` collects the exception (with code, in a counter)
 * `guerriat_metrics.collector.memory` collects PHP memory usage (in KB, in a gauge)
 * `guerriat_metrics.collector.hit` collects hits (with route name, in a counter)
+* `guerriat_metrics.collector.response` collects responses status code (with request route name, in a counter)
 
 ### Monolog integration
 
@@ -306,6 +307,7 @@ Or do all this at once:
                     guerriat_metrics.collector.exception: request.exception
                     guerriat_metrics.collector.memory: request.memory
                     guerriat_metrics.collector.hit: request.hit
+                    guerriat_metrics.collector.response: response
                 monolog:
                     enable: true
                     prefix: 'log'             ## key prefix

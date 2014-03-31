@@ -18,6 +18,7 @@ parameters:
     guerriat_metrics.collector.exception.class: Guerriat\MetricsBundle\MetricCollector\ExceptionMetricCollector
     guerriat_metrics.collector.memory.class: Guerriat\MetricsBundle\MetricCollector\MemoryMetricCollector
     guerriat_metrics.collector.hit.class: Guerriat\MetricsBundle\MetricCollector\HitMetricCollector
+    guerriat_metrics.collector.response.class: Guerriat\MetricsBundle\MetricCollector\ResponseMetricCollector
 
 services:
 
@@ -30,4 +31,6 @@ services:
         class: %guerriat_metrics.collector.memory.class%
     guerriat_metrics.collector.hit:
         class: %guerriat_metrics.collector.hit.class%
+    guerriat_metrics.collector.response:
+        class: %guerriat_metrics.collector.response.class%
 
