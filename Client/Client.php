@@ -40,7 +40,7 @@ class Client
         }
         
         if ($prefix) {
-            $this->prefix = KeyFormatter::format($prefix);
+            $this->prefix = KeyFormatter::format($prefix, false, false, '-', '.');
         }
     }
 

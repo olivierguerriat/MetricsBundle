@@ -51,6 +51,20 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->addMetric($metric);
     }
 
+    public function testPrefixFormatWithDot()
+    {
+        $metric2 = new CounterMetric('prefix.env.key');
+
+        $fakeSender = $this->getMock('Sender', array('addMetric'));
+        $fakeSender->expects($this->once())
+            ->method('addMetric')
+            ->with($this->equalTo($metric2));
+        
+        $metric = new CounterMetric('key');
+        $client = new Client(array('fakeSender' => $fakeSender), 'prefix.env');
+        $client->addMetric($metric);
+    }
+
     public function testAddMetric()
     {
         $metric = new CounterMetric('key');

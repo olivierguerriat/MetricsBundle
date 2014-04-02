@@ -26,6 +26,13 @@ class KeyFormatterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Lecla', KeyFormatter::format("L'éclair au chocolat", false, 5));
         $this->assertEquals('Leclair.au.chocolat', KeyFormatter::format("L'éclair au chocolat", false, false, '.'));
         $this->assertEquals('Leclair.au.choc', KeyFormatter::format("L'éclair au chocolat", 3, 15, '.'));
+        $this->assertEquals('eclair-au-chocolat', KeyFormatter::format('eclair.au.chocolat', false, false, '-'));
+        $this->assertEquals('eclair.au.chocolat', KeyFormatter::format('eclair.au.chocolat', false, false, '-', '.'));
+        $this->assertEquals('eclair.au.chocolat', KeyFormatter::format('eclair.@u.chocolat', false, false, '-', '.'));
+        $this->assertEquals('ec-air.au.chocolat', KeyFormatter::format('ec£air.au.chocolat', false, false, '-', '.'));
+        $this->assertEquals('ec£air.au.chocolat', KeyFormatter::format('ec£air.au.chocolat', false, false, '-', '.£'));
+        $this->assertEquals('eclair-chocolat', KeyFormatter::format('eclair.§.chocolat'));
+        $this->assertEquals('eclair-§-chocolat', KeyFormatter::format('eclair.§.chocolat', false, false, '-', '§'));
     }
 
     public function testFormatWrongGlue()
