@@ -20,14 +20,18 @@ class MetricCollectorManager implements EventSubscriberInterface
     protected $collectors = array();
 
     protected $exception = null;
+    
+    protected $ignore_underscore_route;
 
     /**
      * Setup the collector listener and set its assigned Client
      * @param Client $client
+     * @param boolean $ignore_underscore_route
      */
-    function __construct($client)
+    function __construct($client, $ignore_underscore_route = true)
     {
         $this->client = $client;
+        $this->ignore_underscore_route = $ignore_underscore_route;
     }
 
     /**
@@ -58,7 +62,7 @@ class MetricCollectorManager implements EventSubscriberInterface
     {
         $master = HttpKernelInterface::MASTER_REQUEST === $event->getRequestType();
         foreach ($this->collectors as $key => $collector) {
-            $collector->collect($this->client, $key, $event->getRequest(), $event->getResponse(), $this->exception, $master);
+            $collector->collect($this->client, $key, $event->getRequest(), $event->getResponse(), $this->exception, $master, $this->ignore_underscore_route);
         }
         $this->exception = null;
     }

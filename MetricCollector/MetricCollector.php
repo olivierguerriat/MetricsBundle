@@ -17,9 +17,10 @@ abstract class MetricCollector
      * @param Response $response
      * @param Exception $exception
      * @param boolean $master whether it is the master request
+     * @param boolean $ignore_underscore_route whether it should ignore route starting with '_'
      * @inspiration liuggio/StatsDClientBundle
      */
-    abstract public function collect($client, $key, $request, $response, $exception, $master);
+    abstract public function collect($client, $key, $request, $response, $exception, $master, $ignore_underscore_route);
 
 }
 

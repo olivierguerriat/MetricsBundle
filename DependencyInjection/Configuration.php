@@ -78,6 +78,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('prefix')->defaultValue('')->end()
+                            ->scalarNode('ignore_underscore_route')->defaultValue(true)->end()
                             ->arrayNode('servers')
                                 ->prototype('scalar')->end()
                             ->end()

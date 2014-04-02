@@ -16,7 +16,7 @@ class ExceptionMetricCollector extends MetricCollector
      * Increment a counter for each exception's code
      * @inspiration liuggio/StatsDClientBundle
      */
-    public function collect($client, $key, $request, $response, $exception, $master)
+    public function collect($client, $key, $request, $response, $exception, $master, $ignore_underscore_route)
     {
         if (null === $exception) {
             return true;

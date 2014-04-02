@@ -30,9 +30,41 @@ class ResponseMetricCollectorTest extends \PHPUnit_Framework_TestCase
 
         $c = new ResponseMetricCollector();
 
-        $c->collect($fakeClient, 'key', $fakeRequest, $fakeResponse, null, true);
+        $c->collect($fakeClient, 'key', $fakeRequest, $fakeResponse, null, true, false);
 
-        $c->collect($fakeClient, 'key', $fakeRequest, $fakeResponse, null, false);
+        $c->collect($fakeClient, 'key', $fakeRequest, $fakeResponse, null, false, false);
     }
 
+    public function testCollectWithIgnoreUnderscoreRoute()
+    {
+        $fakeClient = $this->getMock('Client', array('increment'));
+        $fakeClient->expects($this->once())
+            ->method('increment')
+            ->with($this->equalTo('key.200.foo'));
+
+        $fakeRequest = $this->getMock('Request', array('get'));
+        $fakeRequest->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('_route'))
+            ->will($this->returnValue('_bar'));
+        
+        $fakeResponse = $this->getMock('Response', array('getStatusCode'));
+        $fakeResponse->expects($this->once())
+            ->method('getStatusCode')
+            ->will($this->returnValue(200));
+
+        $c = new ResponseMetricCollector();
+
+        $c->collect($fakeClient, 'key', $fakeRequest, $fakeResponse, null, true, true);
+        
+        $fakeRequest = $this->getMock('Request', array('get'));
+        $fakeRequest->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('_route'))
+            ->will($this->returnValue('foo'));
+        
+        $c->collect($fakeClient, 'key', $fakeRequest, $fakeResponse, null, true, true);
+
+    }
+    
 }

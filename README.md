@@ -75,6 +75,14 @@ You can set a key prefix for a given client:
 
 It will be used for all metrics sent by the client (including metrics sent via events, collectors and monolog).
 
+#### Routes beginning with an underscore
+
+By default, `collectors` will ignore routes that begin with an underscore (such as `_wdt` or `_assetic_*`), but you can disable that ignorance by adding `ignore_underscore_route: false` to the client's config as shown:
+
+    client_name:
+        ignore_underscore_route: false
+
+
 ## Metric types
 
 Every metric is identified by a key. It can only contains alphanumerical characters, hyphens, underscores and dots.
@@ -194,6 +202,7 @@ A `MetricCollector` is a class extending `MetricCollector`, having at least a me
 * `$response` is the `Response` object
 * `$exception` is the `Exception` object
 * `$master` is a boolean indicating whether it is the master request
+* `$ignore_underscore_route` is a boolean indicating whether it should ignore route starting with `_`
 
 You have to activate a `MetricCollector` for a specific client via the config file, specifying the service name of the collector and the key you want to use, as you can see in this excerpt of a sample configuration file:
 
@@ -271,18 +280,19 @@ Or do all this at once:
     guerriat_metrics:
         servers:
             srv1:
-                host: 127.0.0.1              ## default is 127.0.0.1
-                port: 8125                   ## default is 8125
+                host: 127.0.0.1                ## default is 127.0.0.1
+                port: 8125                     ## default is 8125
             srv2:
                 host: statsd.guerriat.be
             beta:
                 host: statsd.guerriat.be
                 port: 8127
-                udp_max_size: 1024           ## default is 512
+                udp_max_size: 1024             ## default is 512
         clients:
             default:
                 prefix: guerriat.prod
-                servers: ['srv1', 'srv2']    ## default is ['all']
+                ignore_underscore_route: false ## default is true
+                servers: ['srv1', 'srv2']      ## default is ['all']
                 events:
                     guerriat.app.visit:
                         increment: visit.guest
@@ -310,8 +320,8 @@ Or do all this at once:
                     guerriat_metrics.collector.response: response
                 monolog:
                     enable: true
-                    prefix: 'log'             ## key prefix
-                    level: 'warning'          ## minimum level
+                    prefix: 'log'               ## key prefix
+                    level: 'warning'            ## minimum level
             test:
                 prefix: guerriat.test
                 servers: ['test']
@@ -320,9 +330,9 @@ Or do all this at once:
                     prefix: 'log'
                     level: 'debug'
                     formatter:
-                        context_logging: true ## if you want additional packets for context, default is false.
-                        extra_logging: true   ## if you want additional packets for extra, default is false.
-                        words: 3              ## the number of the word in the stats key, default is 2.
+                        context_logging: true   ## if you want additional packets for context, default is false.
+                        extra_logging: true     ## if you want additional packets for extra, default is false.
+                        words: 3                ## the number of the word in the stats key, default is 2.
     
     
     monolog:

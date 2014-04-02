@@ -27,7 +27,7 @@ class MemoryMetricCollector extends MetricCollector
      * {@inheritdoc}
      * Set a gauge to peak memory usage
      */
-    public function collect($client, $key, $request, $response, $exception, $master)
+    public function collect($client, $key, $request, $response, $exception, $master, $ignore_underscore_route)
     {
         $client->gauge($key, self::getMemoryUsage());
     }

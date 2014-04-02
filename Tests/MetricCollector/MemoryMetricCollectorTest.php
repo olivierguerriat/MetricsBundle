@@ -34,7 +34,7 @@ namespace Guerriat\MetricsBundle\Tests\MetricCollector {
 
             self::$memoryPeak = 2048;
 
-            $c->collect($fakeClient, 'key', new Request(), new Response(), null, false);
+            $c->collect($fakeClient, 'key', new Request(), new Response(), null, false, false);
         }
 
         public function testCollectZero()
@@ -48,7 +48,7 @@ namespace Guerriat\MetricsBundle\Tests\MetricCollector {
 
             self::$memoryPeak = 100;
 
-            $c->collect($fakeClient, 'key', new Request(), new Response(), null, false);
+            $c->collect($fakeClient, 'key', new Request(), new Response(), null, false, false);
         }
 
     }

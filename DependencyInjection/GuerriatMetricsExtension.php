@@ -123,6 +123,7 @@ class GuerriatMetricsExtension extends Extension
         if (!empty($config['collectors'])) {
             $definition = new Definition('%' . $this->serviceBaseId . '.collector.manager.class%');
             $definition->addArgument(new Reference($serviceId));
+            $definition->addArgument($config['ignore_underscore_route']);
             foreach ($config['collectors'] as $collectorService => $collectorKey) {
                 $definition->addMethodCall('addCollector', array($collectorKey, new Reference($collectorService)));
             }

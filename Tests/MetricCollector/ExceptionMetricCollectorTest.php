@@ -19,7 +19,7 @@ class ExceptionMetricCollectorTest extends \PHPUnit_Framework_TestCase
 
         $c = new ExceptionMetricCollector();
 
-        $c->collect($fakeClient, 'key', new Request(), new Response(), new \Exception('', 404), false);
+        $c->collect($fakeClient, 'key', new Request(), new Response(), new \Exception('', 404), false, false);
     }
 
     public function testCollectNullException()
@@ -30,7 +30,7 @@ class ExceptionMetricCollectorTest extends \PHPUnit_Framework_TestCase
 
         $c = new ExceptionMetricCollector();
 
-        $this->assertTrue($c->collect($fakeClient, 'key', new Request(), new Response(), null, false));
+        $this->assertTrue($c->collect($fakeClient, 'key', new Request(), new Response(), null, false, false));
     }
 
 }

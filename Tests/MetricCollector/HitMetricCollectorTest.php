@@ -25,9 +25,36 @@ class HitMetricCollectorTest extends \PHPUnit_Framework_TestCase
 
         $c = new HitMetricCollector();
 
-        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, true);
+        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, true, false);
 
-        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, false);
+        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, false, false);
+    }
+
+    public function testCollectWithIgnoreUnderscoreRoute()
+    {
+        $fakeClient = $this->getMock('Client', array('increment'));
+        $fakeClient->expects($this->once())
+            ->method('increment')
+            ->with($this->equalTo('key.foo'));
+
+        $fakeRequest = $this->getMock('Request', array('get'));
+        $fakeRequest->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('_route'))
+            ->will($this->returnValue('_bar'));
+
+        $c = new HitMetricCollector();
+
+        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, true, true);
+
+        $fakeRequest = $this->getMock('Request', array('get'));
+        $fakeRequest->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('_route'))
+            ->will($this->returnValue('foo'));
+
+        $c->collect($fakeClient, 'key', $fakeRequest, new Response(), null, true, true);
+        
     }
 
 }

@@ -13,11 +13,14 @@ class HitMetricCollector extends MetricCollector
      * {@inheritdoc}
      * Increment a counter for the master request
      */
-    public function collect($client, $key, $request, $response, $exception, $master)
+    public function collect($client, $key, $request, $response, $exception, $master, $ignore_underscore_route)
     {
         if ($master) {
-            $key = sprintf('%s.%s', $key, $request->get('_route'));
-            $client->increment($key);
+            $route = $request->get('_route');
+            if (!$ignore_underscore_route || $route{0} != '_') {
+                $key = sprintf('%s.%s', $key, $route);
+                $client->increment($key);
+            }
         }
     }
 

@@ -14,16 +14,19 @@ class TimeMetricCollector extends MetricCollector
      * Set a timer with the request's time
      * @inspiration liuggio/StatsDClientBundle
      */
-    public function collect($client, $key, $request, $response, $exception, $master)
+    public function collect($client, $key, $request, $response, $exception, $master, $ignore_underscore_route)
     {
         if ($master) {
-            $startTime = $request->server->get('REQUEST_TIME_FLOAT', $request->server->get('REQUEST_TIME'));
+            $route = $request->get('_route');
+            if (!$ignore_underscore_route || $route{0} != '_') {
+                $startTime = $request->server->get('REQUEST_TIME_FLOAT', $request->server->get('REQUEST_TIME'));
 
-            $time = microtime(true) - $startTime;
-            $time = round($time * 1000);
+                $time = microtime(true) - $startTime;
+                $time = round($time * 1000);
             
-            $key = sprintf('%s.%s', $key, $request->get('_route'));
-            $client->timer($key, $time);
+                $key = sprintf('%s.%s', $key, $route);
+                $client->timer($key, $time);
+            }
         }
     }
 

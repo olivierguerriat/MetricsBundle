@@ -13,11 +13,14 @@ class ResponseMetricCollector extends MetricCollector
      * {@inheritdoc}
      * Increment a counter for the master response
      */
-    public function collect($client, $key, $request, $response, $exception, $master)
+    public function collect($client, $key, $request, $response, $exception, $master, $ignore_underscore_route)
     {
         if ($master) {
-            $key = sprintf('%s.%s.%s', $key, $response->getStatusCode(), $request->get('_route'));
-            $client->increment($key);
+            $route = $request->get('_route');
+            if (!$ignore_underscore_route || $route{0} != '_') {
+                $key = sprintf('%s.%s.%s', $key, $response->getStatusCode(), $route);
+                $client->increment($key);
+            }
         }
     }
 
