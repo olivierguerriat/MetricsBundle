@@ -3,6 +3,7 @@
 namespace Guerriat\MetricsBundle\Monolog;
 
 use Monolog\Handler\AbstractProcessingHandler;
+use Guerriat\MetricsBundle\Metric\KeyFormatter;
 
 /**
  * @inspiration liuggio/StatsDClientBundle
@@ -22,7 +23,7 @@ class MetricHandler extends AbstractProcessingHandler
     {
         parent::__construct($level);
         $this->client = $client;
-        $this->prefix = $prefix;
+        $this->prefix = KeyFormatter::format($prefix, false, false, '-', '.');;
     }
 
     /**
