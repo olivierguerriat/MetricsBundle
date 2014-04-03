@@ -77,7 +77,7 @@ It will be used for all metrics sent by the client (including metrics sent via e
 
 #### Routes beginning with an underscore
 
-By default, `collectors` will ignore routes that begin with an underscore (such as `_wdt` or `_assetic_*`), but you can disable that ignorance by adding `ignore_underscore_route: false` to the client's config as shown:
+By default, `collectors` will ignore routes that begin with an underscore (such as `_wdt` or `_assetic_*`), but you can override that behaviour by adding `ignore_underscore_route: false` to the client's config as shown:
 
     client_name:
         ignore_underscore_route: false
@@ -291,7 +291,6 @@ Or do all this at once:
         clients:
             default:
                 prefix: guerriat.prod
-                ignore_underscore_route: false ## default is true
                 servers: ['srv1', 'srv2']      ## default is ['all']
                 events:
                     guerriat.app.visit:
@@ -324,6 +323,7 @@ Or do all this at once:
                     level: 'warning'            ## minimum level
             test:
                 prefix: guerriat.test
+                ignore_underscore_route: false ## default is true
                 servers: ['test']
                 monolog:
                     enable: true
