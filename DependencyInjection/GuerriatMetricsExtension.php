@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+use Symfony\Component\Console\ConsoleEvents;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -56,6 +57,10 @@ class GuerriatMetricsExtension extends Extension
             $definition->addTag(
                 'kernel.event_listener',
                 array('event' => 'kernel.terminate', 'method' => 'onKernelTerminate', 'priority' => -100)
+            );
+            $definition->addTag(
+                'kernel.event_listener',
+                array('event' => ConsoleEvents::TERMINATE, 'method' => 'onKernelTerminate', 'priority' => -100)
             );
             $container->setDefinition($this->serviceBaseId . '.sender.' . $alias, $definition);
         }
