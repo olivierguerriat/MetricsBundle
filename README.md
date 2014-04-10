@@ -290,7 +290,7 @@ Or do all this at once:
                 udp_max_size: 1024             ## default is 512
         clients:
             default:
-                prefix: guerriat.prod
+                prefix: guerriat.%kernel.environment%
                 servers: ['srv1', 'srv2']      ## default is ['all']
                 events:
                     guerriat.app.visit:
@@ -313,7 +313,7 @@ Or do all this at once:
                 collectors:
                     sample_bundle.collector.url: request.url
                     guerriat_metrics.collector.time: request.time
-                    guerriat_metrics.collector.exception: request.exception
+                    guerriat_metrics.collector.exception: request
                     guerriat_metrics.collector.memory: request.memory
                     guerriat_metrics.collector.hit: request.hit
                     guerriat_metrics.collector.response: response
@@ -322,7 +322,7 @@ Or do all this at once:
                     prefix: 'log'               ## key prefix
                     level: 'warning'            ## minimum level
             test:
-                prefix: guerriat.test
+                prefix: guerriat
                 ignore_underscore_route: false ## default is true
                 servers: ['test']
                 monolog:
