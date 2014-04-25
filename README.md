@@ -194,7 +194,7 @@ Here's an excerpt of a sample configuration file:
 
 A `MetricCollector` is a class extending `MetricCollector`, having at least a method which is called on kernel.response and whose signature is:
 
-    public function collect($client, $key, $request, $response, $exception, $master);
+    public function collect($client, $key, $request, $response, $exception, $master, $ignore_underscore_route);
 
 * `$client` is a reference to the `Client` service and you can use it as you would from the controller
 * `$key` is the key specified in the config file
