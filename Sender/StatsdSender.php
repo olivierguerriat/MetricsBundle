@@ -86,7 +86,7 @@ class StatsdSender extends SenderAbstract
         if (!empty($message)) {
             // Silently ignore failures
             try {
-                $fp = fsockopen('udp://' . $this->host, $this->port, $errno, $errstr);
+                $fp = @fsockopen('udp://' . $this->host, $this->port, $errno, $errstr);
                 if (!$fp) {
                     return;
                 }
@@ -112,7 +112,8 @@ class StatsdSender extends SenderAbstract
         if (method_exists($metric, 'getSampleRate') && $metric->getSampleRate() < 1) {
             if ((mt_rand() / mt_getrandmax()) > $metric->getSampleRate()) {
                 return false;
-            } else {
+            }
+            else {
                 return sprintf('%s:%s|%s|@%s', $metric->getKey(), $metric->getValue(), $code, $metric->getSampleRate());
             }
         }
