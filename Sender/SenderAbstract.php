@@ -53,6 +53,14 @@ abstract class SenderAbstract
         $this->sendMetrics($this->metrics);
     }
 
+    /**
+     * Send saved metrics and clear collection.
+     */
+    public function flushMetrics()
+    {
+        $this->sendMetrics($this->metrics);
+        $this->metrics = array();
+    }
 }
 
 

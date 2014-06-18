@@ -366,6 +366,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->addMetric($metric2);
     }
 
+    public function testFlushMetrics()
+    {
+        $fakeSender = $this->getMock('Sender', array('flushMetrics'));
+        $fakeSender->expects($this->once())->method('flushMetrics');
+        $fakeSender2 = $this->getMock('Sender', array('flushMetrics'));
+        $fakeSender2->expects($this->once())->method('flushMetrics');
+        $client = new Client(array('fakeSender' => $fakeSender, 'fakeSender2' => $fakeSender2), 'prefix');
+
+        $client->flushMetrics();
+    }
+
     /**
      * Sending an Event that wasn't listened to
      */

@@ -81,6 +81,11 @@ namespace Guerriat\MetricsBundle\Tests\Sender {
             return parent::processMetric($metric);
         }
 
+        public function getMetrics()
+        {
+            return $this->metrics;
+        }
+
     }
 
     class StatsdSenderTest extends \PHPUnit_Framework_TestCase
@@ -208,6 +213,20 @@ namespace Guerriat\MetricsBundle\Tests\Sender {
             $this->assertEquals($message, $sender->lastSentMessage);
             $this->assertEquals($nb + 1, $sender->processMetricCalledCounter);
             $this->assertEquals(2, $sender->sendMessageCalledCounter);
+        }
+
+        public function testFlushMetrics()
+        {
+            $sender = $this->getMockStatsdSender();
+            $metric = new CounterMetric('key');
+            $message = $sender->processMetric($metric);
+            $sender->addMetric($metric);
+            $this->assertEquals(1, count($sender->getMetrics()));
+            $sender->flushMetrics();
+            $this->assertEquals($message, $sender->lastSentMessage);
+            $this->assertEquals(2, $sender->processMetricCalledCounter);
+            $this->assertEquals(1, $sender->sendMessageCalledCounter);
+            $this->assertEmpty($sender->getMetrics());
         }
 
         public function testProcessIncrementMetric()

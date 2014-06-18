@@ -166,6 +166,16 @@ class Client
         $alias = $this->senderAliases[(int)(crc32($key) % $this->nbSenders)];
         return $this->senders[$alias];
     }
+    
+    /**
+     * Send saved metrics and clear collection.
+     */
+    public function flushMetrics()
+    {
+        foreach ($this->senders as $sender) {
+            $sender->flushMetrics();
+        }
+    }
 
     /**
      * Add a event to listen
