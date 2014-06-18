@@ -114,6 +114,10 @@ There is 4 ways to send metrics :
 * by using a collector service
 * via Monolog
 
+Metrics are automatically sent with the `onKernelTerminate` event, but they can be sent at any time by using the `flushMetrics()` method on a client as shown below from a controller:
+
+    $this->get('guerriat_metrics')->flushMetrics();
+
 ### In the controller
 
 In the controller, you can send metrics using the `default` client thanks to the `guerriat_metrics` service. For other clients, the service is named `guerriat_metrics.client_name`.
